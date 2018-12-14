@@ -1,18 +1,22 @@
 nbpApiUrl: 'http://api.nbp.pl/api/exchangerates/tables/A?format=json'
-nbpApiKnownCurrencies: 'GBP,EUR,PLN'
+ratesForOfflineModeFileName: response.json 
+nbpApiKnownCurrencies: 
+  - GBP
+  - EUR
+  - PLN
 countries:
-  UK:
+-
     countryCode: UK
     currencyCode: GBP
     fixedCostAmount: 600
-    taxRate: 25
-  DE:
+    taxRate: 0.25
+-
     countryCode: DE
     currencyCode: EUR
     fixedCostAmount: 800
-    taxRate: 20
-  PL:
+    taxRate: 0.20
+-
     countryCode: PL
     currencyCode: PLN
     fixedCostAmount: 1200
-    taxRate: 19
+    taxRate: 0.19
