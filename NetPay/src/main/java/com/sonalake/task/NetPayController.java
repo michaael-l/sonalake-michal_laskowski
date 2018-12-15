@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,26 +20,29 @@ class NetPayController {
 	@Autowired
 	private NetPayConfiguration configuration;
 
-	@GetMapping("/getPay/{grossAmount}")
-	List<NetPayResource> getNetPay(@PathVariable int grossAmount) {
+	public static final int NUM_OF_DAY_IN_MONTHS = 22;
 
-		List<NetPayResource> result = new ArrayList<>();
+	@RequestMapping(value = "/getPay", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	@ResponseBody
+	List<NetPayResource> getNetPay(@RequestBody List<NetPayResource> request) {
 
 		Map<String, SingleCurrencyRateResource> currencies = currencyRatesFetcher.fetchLatest();
-
-		configuration.getCountries().stream().forEach(country -> {
-			result.add(NetPayResource.builder().countryCode(country.getCurrencyCode())
-					.netPay(calculateNetAmount(grossAmount * currencies.get(country.getCurrencyCode()).getMid(),
-							country.getTaxRate(), country.getFixedCostAmount()))
-					.build());
-		});
-
-		return result;
-	}
-
-	private Float calculateNetAmount(float grossAmount, float taxRate, float fixedCost) {
-		return grossAmount * (1f - taxRate) - fixedCost;
+		return processCountriesAndRates(request, currencies);
 
 	}
 
+	private List<NetPayResource> processCountriesAndRates(List<NetPayResource> request,
+			Map<String, SingleCurrencyRateResource> currencies) {
+
+		request.stream()
+				.forEach(country -> country.setNetPay(
+						calculateNetAmount(country.getNetPay(), currencies.get(country.getCurrencyCode()).getMid(),
+								configuration.getCountries().get(country.getCountryCode()).getTaxRate(),
+								configuration.getCountries().get(country.getCountryCode()).getFixedCostAmount())));
+		return request;
+	}
+
+	private Float calculateNetAmount(float grossAmount, float exchangeRate, float taxRate, float fixedCost) {
+		return NUM_OF_DAY_IN_MONTHS * grossAmount * exchangeRate * (1f - taxRate) - fixedCost;
+	}
 }

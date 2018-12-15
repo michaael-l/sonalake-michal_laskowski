@@ -1,6 +1,7 @@
 package com.sonalake.task;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,7 +18,7 @@ public class NetPayConfiguration {
 	private String nbpApiUrl;
 	private String ratesForOfflineModeFileName;
 	private List<String> nbpApiKnownCurrencies;
-	private List<Country> countries;
+	private Map<String, Country> countries;
 
 	@Data
 	public static class Country {

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +14,7 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,14 +27,24 @@ public class CurrencyRatesFetcher {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
+	public static final String PLN = "PLN";
+
+	/**
+	 * 
+	 * @return {@code Map} with currency rates mapped by currency codes
+	 */
 	@Cacheable("rates")
 	public Map<String, SingleCurrencyRateResource> fetchLatest() {
 
-		NbpApiResponseResource[] onlineRates = restTemplate.getForObject(configuration.getNbpApiUrl(),
-				NbpApiResponseResource[].class);
+		NbpApiResponseResource[] rates = null;
+		try {
+			rates = restTemplate.getForObject(configuration.getNbpApiUrl(), NbpApiResponseResource[].class);
+		} catch (RestClientException rce) {
+			rates = fetchOfflineRates();
+		}
 
 		Map<String, SingleCurrencyRateResource> result = Stream
-				.of(Optional.ofNullable(onlineRates).orElse(fetchOfflineRates()))
+				.of(rates)
 				.flatMap(rate -> rate.getRates().stream()).filter(Objects::nonNull)
 				// we want just rates that we have configured
 				.filter(rate -> configuration.getNbpApiKnownCurrencies().contains(rate.getCode()))
@@ -42,11 +52,17 @@ public class CurrencyRatesFetcher {
 						.build())
 				.collect(Collectors.toMap(SingleCurrencyRateResource::getCode, Function.identity()));
 		// add "fake" polish currency rate here to simplify processing
-		result.put("PLN", SingleCurrencyRateResource.builder().code("PLN").mid(1).build());
+		result.put(PLN, SingleCurrencyRateResource.builder().code(PLN).mid(1).build());
 		return result;
 	}
 
-	private NbpApiResponseResource[] fetchOfflineRates() {
+	/**
+	 * if online currency rates are unavailable - this method will provide some
+	 * static rates from property file
+	 * 
+	 * @return {@code Map} with currency rates mapped by currency codes
+	 */
+	public NbpApiResponseResource[] fetchOfflineRates() {
 		NbpApiResponseResource[] offlineRates = null;
 		try (InputStream stream = getClass().getClassLoader()
 				.getResourceAsStream(configuration.getRatesForOfflineModeFileName())) {
