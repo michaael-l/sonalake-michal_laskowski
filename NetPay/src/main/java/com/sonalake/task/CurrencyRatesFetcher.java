@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -24,8 +25,9 @@ public class CurrencyRatesFetcher {
 
 	@Autowired
 	private NetPayConfiguration configuration;
-
-	private RestTemplate restTemplate = new RestTemplate();
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	public static final String PLN = "PLN";
 
@@ -62,7 +64,7 @@ public class CurrencyRatesFetcher {
 	 * 
 	 * @return {@code Map} with currency rates mapped by currency codes
 	 */
-	public NbpApiResponseResource[] fetchOfflineRates() {
+	private NbpApiResponseResource[] fetchOfflineRates() {
 		NbpApiResponseResource[] offlineRates = null;
 		try (InputStream stream = getClass().getClassLoader()
 				.getResourceAsStream(configuration.getRatesForOfflineModeFileName())) {
@@ -70,9 +72,14 @@ public class CurrencyRatesFetcher {
 			offlineRates = mapper.readValue(new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8)),
 					NbpApiResponseResource[].class);
 		} catch (IOException ioe) {
-			throw new RuntimeException("unable to fetch online or online rates");
+			throw new RuntimeException("unable to fetch online or offline rates");
 		}
 		return offlineRates;
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+	    return new RestTemplate();
 	}
 
 }

@@ -1,15 +1,10 @@
 package com.sonalake.task;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,7 +17,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringRunner.class)
@@ -49,7 +43,7 @@ public class NetPayApplicationTests {
 	private RestTemplate template;
 
 	@Test
-	public void shouldReturnProperOnlineResponse() throws Exception {
+	public void shouldReturnProperRates() throws Exception {
 		
 		
 		//given
@@ -60,25 +54,6 @@ public class NetPayApplicationTests {
 		MvcResult mvcResult = mockMvc
 				.perform(post("/getPay/").content(request).contentType("application/json"))
 				.andExpect(status().isOk()).andExpect(content().json(response, false)).andReturn();
-	}
-
-	@Ignore
-	@Test
-	public void shouldReturnProperOfflineResponse() throws Exception {
-
-		// given
-		String jsonContent = IOUtils.toString(responseOk.getInputStream(), "UTF-8");
-
-		// when
-		when(fetcher.fetchLatest()).thenThrow(new RestClientException(""));
-		when(template.getForObject(any(), any())).thenReturn(new NbpApiResponseResource[1]);
-
-		MvcResult mvcResult = mockMvc.perform(get("/getPay/{grossAmount}", "10000")).andExpect(status().isOk())
-				.andExpect(content().json(jsonContent, false)).andReturn();
-
-		// then
-		verify(fetcher.fetchOfflineRates());
-
 	}
 
 }
