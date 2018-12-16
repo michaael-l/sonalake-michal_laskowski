@@ -50,7 +50,9 @@ public class CurrencyRatesFetcher {
 				.flatMap(rate -> rate.getRates().stream()).filter(Objects::nonNull)
 				// we want just rates that we have configured
 				.filter(rate -> configuration.getNbpApiKnownCurrencies().contains(rate.getCode()))
-				.map(currency -> SingleCurrencyRateResource.builder().code(currency.getCode()).mid(currency.getMid())
+				.map(currency -> SingleCurrencyRateResource
+						.builder().code(currency.getCode())
+						.mid(currency.getMid())
 						.build())
 				.collect(Collectors.toMap(SingleCurrencyRateResource::getCode, Function.identity()));
 		// add "fake" polish currency rate here to simplify processing

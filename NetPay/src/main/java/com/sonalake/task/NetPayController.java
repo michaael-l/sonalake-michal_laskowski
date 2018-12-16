@@ -36,11 +36,14 @@ class NetPayController {
 	private List<NetPayResource> processCountriesAndRates(List<NetPayResource> request,
 			Map<String, SingleCurrencyRateResource> currencies) {
 
-		request.stream().filter(country -> isNetPayValid(country))
+		request.stream()
+				.filter(country -> isNetPayValid(country))
 				.forEach(country -> country.setNetPay(
-						calculateNetAmount(country.getNetPay(), currencies.get(country.getCurrencyCode()).getMid(),
-								configuration.getCountries().get(country.getCountryCode()).getTaxRate(), configuration
-										.getCountries().get(country.getCountryCode()).getFixedCostAmount())));
+						calculateNetAmount(
+								country.getNetPay(), 
+								currencies.get(country.getCurrencyCode()).getMid(),
+								configuration.getCountries().get(country.getCountryCode()).getTaxRate(),
+								configuration.getCountries().get(country.getCountryCode()).getFixedCostAmount())));
 		return request;
 	}
 
