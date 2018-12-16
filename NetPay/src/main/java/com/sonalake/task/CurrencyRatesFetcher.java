@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -30,12 +32,15 @@ public class CurrencyRatesFetcher {
 	private RestTemplate restTemplate;
 
 	public static final String PLN = "PLN";
+	
 
 	/**
 	 * results of calling this method are cached to reduce time and bandwidth
 	 *  
 	 * @return {@code Map} with currency rates mapped by currency codes
 	 */
+	@CacheEvict(cacheNames= {"rates"})
+	@Scheduled(cron = "0 1 1 * * ?")
 	@Cacheable("rates")
 	public Map<String, SingleCurrencyRateResource> fetchLatest() {
 
