@@ -2,6 +2,7 @@ package com.sonalake.task;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,15 +36,21 @@ class NetPayController {
 	private List<NetPayResource> processCountriesAndRates(List<NetPayResource> request,
 			Map<String, SingleCurrencyRateResource> currencies) {
 
-		request.stream()
+		request.stream().filter(country -> isNetPayValid(country))
 				.forEach(country -> country.setNetPay(
 						calculateNetAmount(country.getNetPay(), currencies.get(country.getCurrencyCode()).getMid(),
-								configuration.getCountries().get(country.getCountryCode()).getTaxRate(),
-								configuration.getCountries().get(country.getCountryCode()).getFixedCostAmount())));
+								configuration.getCountries().get(country.getCountryCode()).getTaxRate(), configuration
+										.getCountries().get(country.getCountryCode()).getFixedCostAmount())));
 		return request;
 	}
 
 	private Float calculateNetAmount(float grossAmount, float exchangeRate, float taxRate, float fixedCost) {
 		return NUM_OF_DAY_IN_MONTHS * grossAmount * exchangeRate * (1f - taxRate) - fixedCost;
 	}
+
+	private boolean isNetPayValid(NetPayResource country) {
+		return Objects.nonNull(country.getCountryCode()) && Objects.nonNull(country.getCurrencyCode())
+				&& Objects.nonNull(country.getNetPay()) && country.getNetPay() > 0;
+	}
+
 }
