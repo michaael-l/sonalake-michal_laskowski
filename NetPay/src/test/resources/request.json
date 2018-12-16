@@ -1,0 +1,15 @@
+[{
+	"netPay": 400,
+	"countryCode": "UK",
+	"currencyCode": "GBP"
+},
+{
+	"netPay": 500,
+	"countryCode": "DE",
+	"currencyCode": "EUR"
+},
+{
+	"netPay": 1200,
+	"countryCode": "PL",
+	"currencyCode": "PLN"
+}]

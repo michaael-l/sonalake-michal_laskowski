@@ -1,0 +1,28 @@
+<div>
+  <label>Stawka UK:
+    <input [(ngModel)]="rates[0].netPay" placeholder="UK">
+    <input type="hidden" data-ng-value="rates[0].countryCodey=UK">
+  </label>
+</div>
+<div>
+  <label>Stawka DE:
+    <input [(ngModel)]="rates[1].netPay" placeholder="DE">
+    <input hidden [(ngModel)]="rates[1].countryCode" value="DE">
+  </label>
+</div>
+<div>
+  <label>Stawka PL:
+    <input [(ngModel)]="rates[2].netPay" placeholder="PL">
+    <input hidden [(ngModel)]="rates[2].countryCode" value="PL">
+  </label>
+</div>
+
+<button (click)="getRates()">Wyślij</button>
+
+
+<h2>Stawki</h2>
+<ul>
+  <li *ngFor="let rate of responseRates">
+    <span >Stawka w PLN dla {{rate.countryCode}} </span> {{rate.netPay}}
+  </li>
+</ul>

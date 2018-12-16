@@ -1,0 +1,21 @@
+[
+	{
+		"table": "A",
+		"no": "242/A/NBP/2018",
+		"effectiveDate": "2018-12-13",
+		"rates": 
+		[
+			{
+				"currency": "euro",
+				"code": "EUR",
+				"mid": 4.2937
+			},
+
+			{
+				"currency": "funt szterling",
+				"code": "GBP",
+				"mid": 4.7787
+			}
+		]
+	}
+]
