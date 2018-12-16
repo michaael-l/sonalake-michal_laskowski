@@ -37,7 +37,7 @@ Application configuration is maintained in yaml format under application.yml fil
  # Application internals
 Two classes contain logic of application , namely **NetPayController** and **CurrencyRatesFetcher**.
  - **NetPayController** - entry point of rest requests. Processes input , and calculates the net pay based on configuration, currency rates fetched by **CurrencyRatesFetcher** class and daily rates from request. Simple request validation is also handled in this class
- - **CurrencyRatesFetcher** - fetches the data from NBP service (or static file if the service is unavailable). Results of invoking this class method **fetchLatest()** are cached to speed up processing time and avoid redundant network traffic
+ - **CurrencyRatesFetcher** - fetches the data from NBP service (or static file if the service is unavailable). Results of invoking this class method **fetchLatest()** are cached to speed up processing time and avoid redundant network traffic. Cache is refreshed once per day 
   
 
 
