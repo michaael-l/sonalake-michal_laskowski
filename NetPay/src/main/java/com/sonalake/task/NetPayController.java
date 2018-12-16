@@ -44,8 +44,19 @@ class NetPayController {
 		return request;
 	}
 
+	/**
+	 * 
+	 * @param grossAmount
+	 * @param exchangeRate
+	 * @param taxRate
+	 * @param fixedCost
+	 * @return the net amount 
+	 */
 	private Float calculateNetAmount(float grossAmount, float exchangeRate, float taxRate, float fixedCost) {
-		return NUM_OF_DAY_IN_MONTHS * grossAmount * exchangeRate * (1f - taxRate) - fixedCost;
+		float monthlyGrossSalary = NUM_OF_DAY_IN_MONTHS * grossAmount;
+		float monthlyNetSalary = monthlyGrossSalary * (1f - taxRate);
+		float monthlyNetIncome = monthlyNetSalary - fixedCost;
+		return monthlyNetIncome * exchangeRate;
 	}
 
 	private boolean isNetPayValid(NetPayResource country) {

@@ -1,3 +1,4 @@
+ <h1>Stawki dzienne:</h1>
 <div>
   <label>Stawka UK:
     <input [(ngModel)]="rates[0].netPay" placeholder="UK">
@@ -20,9 +21,9 @@
 <button (click)="getRates()">Wyślij</button>
 
 
-<h2>Stawki</h2>
+<h1>Stawki miesięczne:</h1>
 <ul>
   <li *ngFor="let rate of responseRates">
-    <span >Stawka w PLN dla {{rate.countryCode}} </span> {{rate.netPay}}
+    <span >Stawka w PLN dla {{rate.countryCode}} </span> <strong>{{rate.netPay}} </strong>
   </li>
 </ul>
