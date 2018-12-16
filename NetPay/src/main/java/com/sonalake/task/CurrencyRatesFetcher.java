@@ -32,7 +32,8 @@ public class CurrencyRatesFetcher {
 	public static final String PLN = "PLN";
 
 	/**
-	 * 
+	 * results of calling this method are cached to reduce time and bandwidth
+	 *  
 	 * @return {@code Map} with currency rates mapped by currency codes
 	 */
 	@Cacheable("rates")
