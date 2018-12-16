@@ -39,8 +39,6 @@ public class CurrencyRatesFetcher {
 	 *  
 	 * @return {@code Map} with currency rates mapped by currency codes
 	 */
-	@CacheEvict(cacheNames= {"rates"})
-	@Scheduled(cron = "0 1 1 * * ?")
 	@Cacheable("rates")
 	public Map<String, SingleCurrencyRateResource> fetchLatest() {
 
@@ -88,6 +86,11 @@ public class CurrencyRatesFetcher {
 	@Bean
 	public RestTemplate restTemplate() {
 	    return new RestTemplate();
+	}
+	
+	@Scheduled(cron = "0 1 1 * * ?")
+	@CacheEvict(cacheNames= {"rates"})
+	public void clearCache() {      
 	}
 
 }
