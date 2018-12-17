@@ -1,15 +1,15 @@
 [{
-	"netPay": 28764.0,
+	"netPay": 28630.800247192383 ,
 	"countryCode": "UK",
 	"currencyCode": "GBP"
 },
 {
-	"netPay": 34416.8,
+	"netPay": 34324.799146611665,
 	"countryCode": "DE",
 	"currencyCode": "EUR"
 },
 {
-	"netPay": 20184.0,
+	"netPay":  20184.000062942505,
 	"countryCode": "PL",
 	"currencyCode": "PLN"
 }]

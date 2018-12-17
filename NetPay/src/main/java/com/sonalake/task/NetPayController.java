@@ -1,5 +1,6 @@
 package com.sonalake.task;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +22,7 @@ class NetPayController {
 	@Autowired
 	private NetPayConfiguration configuration;
 
-	public static final int NUM_OF_DAY_IN_MONTHS = 22;
+	public static final BigDecimal NUM_OF_DAY_IN_MONTHS = new BigDecimal(22);
 
 	@CrossOrigin
 	@RequestMapping(value = "/getPay", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
@@ -53,18 +54,18 @@ class NetPayController {
 	 * @param exchangeRate
 	 * @param taxRate
 	 * @param fixedCost
-	 * @return the net amount 
+	 * @return the net amount
 	 */
-	private Float calculateNetAmount(float grossAmount, float exchangeRate, float taxRate, float fixedCost) {
-		float monthlyGrossSalary = NUM_OF_DAY_IN_MONTHS * grossAmount;
-		float monthlyNetSalary = monthlyGrossSalary * (1f - taxRate);
-		float monthlyNetIncome = monthlyNetSalary - fixedCost;
-		return monthlyNetIncome * exchangeRate;
+	private BigDecimal calculateNetAmount(BigDecimal grossAmount, float exchangeRate, float taxRate, float fixedCost) {
+		BigDecimal monthlyGrossSalary = grossAmount.multiply(NUM_OF_DAY_IN_MONTHS);
+		BigDecimal monthlyNetSalary = monthlyGrossSalary.multiply(new BigDecimal(1f - taxRate));
+		BigDecimal monthlyNetIncome = monthlyNetSalary.subtract(new BigDecimal(fixedCost));
+		return monthlyNetIncome.multiply(new BigDecimal(exchangeRate));
 	}
 
 	private boolean isNetPayValid(NetPayResource country) {
 		return Objects.nonNull(country.getCountryCode()) && Objects.nonNull(country.getCurrencyCode())
-				&& Objects.nonNull(country.getNetPay()) && country.getNetPay() > 0;
+				&& Objects.nonNull(country.getNetPay()) && country.getNetPay().compareTo(BigDecimal.ZERO) > 0;
 	}
 
 }
