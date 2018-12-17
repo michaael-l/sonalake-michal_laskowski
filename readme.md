@@ -28,7 +28,7 @@ $ ng serve
  - fill in rates and see response
 
 # Configuration
-Application configuration is maintained in yaml format under application.yml file.Following parameters are used:
+Application configuration is maintained in yaml format under **application.yml** file.Following parameters are used:
  - **nbpApiUrl** - url of nbp service providing exchange rates
  - **ratesForOfflineModeFileName** - name of the file with some historic rates in case if nbp service is unavailable
  - **nbpApiKnownCurrencies** - list of currencies that application can handle
