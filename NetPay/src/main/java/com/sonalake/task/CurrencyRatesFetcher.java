@@ -75,6 +75,7 @@ public class CurrencyRatesFetcher {
 		try (InputStream stream = getClass().getClassLoader()
 				.getResourceAsStream(configuration.getRatesForOfflineModeFileName())) {
 			ObjectMapper mapper = new ObjectMapper();
+			assert stream != null;
 			offlineRates = mapper.readValue(new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8)),
 					NbpApiResponseResource[].class);
 		} catch (IOException ioe) {
@@ -90,7 +91,8 @@ public class CurrencyRatesFetcher {
 	
 	@Scheduled(cron = "0 1 1 * * ?")
 	@CacheEvict(cacheNames= {"rates"})
-	public void clearCache() {      
+	public void clearCache() {
+		// empty
 	}
 
 }
